@@ -12,3 +12,6 @@ dist/
 
 # Env
 .env
+
+.vercel
+.env*
