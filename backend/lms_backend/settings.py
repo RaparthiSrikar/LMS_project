@@ -77,18 +77,43 @@ WSGI_APPLICATION = "lms_backend.wsgi.application"
 # ------------------------------------------------------------------
 # Database — PostgreSQL by default, falls back to SQLite for local dev
 # ------------------------------------------------------------------
-if os.environ.get("USE_SQLITE", "true").lower() == "true":
+# Use SQLite if explicitly requested or if no Postgres database variables are provided.
+# If running on Vercel, copy the SQLite database to /tmp/db.sqlite3 (a writable directory)
+# so it can be successfully opened and written to during requests.
+has_postgres_env = bool(os.environ.get("DB_HOST"))
+use_sqlite = os.environ.get("USE_SQLITE", "true").lower() == "true"
+
+if use_sqlite and not has_postgres_env:
+    db_path = BASE_DIR / "db.sqlite3"
+    
+    if os.environ.get("VERCEL") == "1":
+        import shutil
+        tmp_db_path = Path("/tmp/db.sqlite3")
+        try:
+            if not tmp_db_path.exists() and db_path.exists():
+                temp_copy_path = Path(f"/tmp/db.sqlite3.tmp-{os.getpid()}")
+                shutil.copy2(db_path, temp_copy_path)
+                try:
+                    temp_copy_path.rename(tmp_db_path)
+                except FileExistsError:
+                    temp_copy_path.unlink(missing_ok=True)
+        except Exception as e:
+            pass
+        
+        if tmp_db_path.exists():
+            db_path = tmp_db_path
+
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+            "NAME": db_path,
         }
     }
 else:
     DATABASES = {
         "default": {
             "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DB_NAME", "lms_db"),
+            "NAME": os.environ.get("DB_NAME", "postgres"),
             "USER": os.environ.get("DB_USER", "postgres"),
             "PASSWORD": os.environ.get("DB_PASSWORD", ""),
             "HOST": os.environ.get("DB_HOST", "localhost"),
@@ -114,7 +139,10 @@ STATIC_URL = "static/"
 STATIC_ROOT = BASE_DIR / "staticfiles"
 
 MEDIA_URL = "/media/"
-MEDIA_ROOT = BASE_DIR / "media"
+if os.environ.get("VERCEL") == "1":
+    MEDIA_ROOT = Path("/tmp/media")
+else:
+    MEDIA_ROOT = BASE_DIR / "media"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
