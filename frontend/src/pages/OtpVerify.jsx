@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import client from "../api/client";
 import { useAuth } from "../context/AuthContext";
@@ -11,6 +11,34 @@ export default function OtpVerify() {
   const [code, setCode] = useState("");
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [cooldown, setCooldown] = useState(0);
+
+  useEffect(() => {
+    let timer;
+    if (cooldown > 0) {
+      timer = setTimeout(() => setCooldown(cooldown - 1), 1000);
+    }
+    return () => clearTimeout(timer);
+  }, [cooldown]);
+
+  const handleResend = async () => {
+    if (!email) {
+      setError("Please enter your email address first.");
+      return;
+    }
+    setError("");
+    setSuccess("");
+    try {
+      await client.post("/auth/otp/send/", {
+        email,
+        purpose: "email_verification",
+      });
+      setSuccess("Verification code resent successfully!");
+      setCooldown(30); // 30-second cooldown
+    } catch (e) {
+      setError(e.response?.data?.detail || "Failed to resend OTP. Please try again.");
+    }
+  };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -79,7 +107,29 @@ export default function OtpVerify() {
           </button>
         </form>
 
-        <button className="btn-outline-login" onClick={() => navigate("/login")} style={{ marginTop: 12 }}>
+        <div style={{ marginTop: 16, textAlign: "center", fontSize: 13, color: "var(--text-muted)" }}>
+          Didn't receive the code?{" "}
+          <button
+            type="button"
+            onClick={handleResend}
+            disabled={cooldown > 0}
+            style={{
+              background: "none",
+              border: "none",
+              color: cooldown > 0 ? "#8c8c8c" : "#1b75ff",
+              cursor: cooldown > 0 ? "not-allowed" : "pointer",
+              fontWeight: 600,
+              padding: 0,
+              fontFamily: "inherit",
+              fontSize: "inherit",
+              textDecoration: cooldown > 0 ? "none" : "underline",
+            }}
+          >
+            {cooldown > 0 ? `Resend in ${cooldown}s` : "Resend OTP"}
+          </button>
+        </div>
+
+        <button className="btn-outline-login" onClick={() => navigate("/login")} style={{ marginTop: 16 }}>
           Back to Sign In
         </button>
       </div>
