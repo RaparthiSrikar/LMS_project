@@ -39,6 +39,11 @@ export default function Dashboard() {
   const [data, setData] = useState(null);
   const [enrollments, setEnrollments] = useState([]);
   const [loadingEnrollments, setLoadingEnrollments] = useState(false);
+  const [assignments, setAssignments] = useState([]);
+  const [submissions, setSubmissions] = useState([]);
+  const [quizzes, setQuizzes] = useState([]);
+  const [attempts, setAttempts] = useState([]);
+  const [loadingAssessments, setLoadingAssessments] = useState(false);
   const { user } = useAuth();
   const navigate = useNavigate();
   
@@ -74,6 +79,26 @@ export default function Dashboard() {
     }
   };
 
+  const fetchAssessments = async () => {
+    setLoadingAssessments(true);
+    try {
+      const [assignsRes, subsRes, quizzesRes, attemptsRes] = await Promise.all([
+        client.get("/assignments/assignments/"),
+        client.get("/assignments/submissions/"),
+        client.get("/quizzes/quizzes/"),
+        client.get("/quizzes/attempts/"),
+      ]);
+      setAssignments(assignsRes.data.results ?? assignsRes.data);
+      setSubmissions(subsRes.data.results ?? subsRes.data);
+      setQuizzes(quizzesRes.data.results ?? quizzesRes.data);
+      setAttempts(attemptsRes.data.results ?? attemptsRes.data);
+    } catch (e) {
+      console.error("Failed to load assessments", e);
+    } finally {
+      setLoadingAssessments(false);
+    }
+  };
+
   const isStudent = user?.role === "student";
   const isTrainer = user?.role === "trainer";
 
@@ -102,6 +127,8 @@ export default function Dashboard() {
         })
         .catch(() => {})
         .finally(() => setLoadingCalendar(false));
+
+      fetchAssessments();
     } else {
       // Admin or Trainer stats fetch
       if (isTrainer) {
@@ -172,6 +199,10 @@ export default function Dashboard() {
     const totalCourses = enrollments.length;
     const completedCourses = enrollments.filter(e => e.is_completed || e.progress_percent >= 100).length;
     const inProgressCourses = totalCourses - completedCourses;
+
+    const enrolledCourseIds = new Set(enrollments.map(e => e.course));
+    const studentAssignments = assignments.filter(a => enrolledCourseIds.has(a.course));
+    const studentQuizzes = quizzes.filter(q => enrolledCourseIds.has(q.course));
 
     return (
       <div style={{ maxWidth: 1000, margin: "0 auto" }}>
@@ -360,6 +391,148 @@ export default function Dashboard() {
                   );
                 })()}
 
+              </div>
+            )}
+
+            {/* Assessments widget */}
+            {enrollments.length > 0 && (
+              <div className="card" style={{ padding: 20 }}>
+                <h3 style={{ margin: "0 0 16px 0", fontSize: 16 }}>✍️ Assignments & Quizzes</h3>
+                {loadingAssessments ? (
+                  <div style={{ fontSize: 13, color: "var(--text-muted)" }}>Loading assessments...</div>
+                ) : (studentAssignments.length === 0 && studentQuizzes.length === 0) ? (
+                  <div style={{ padding: "12px 0", color: "var(--text-muted)", fontSize: 13, fontStyle: "italic" }}>
+                    No assignments or quizzes published yet.
+                  </div>
+                ) : (
+                  <div style={{ display: "flex", flexDirection: "column", gap: 12 }}>
+                    
+                    {/* Assignments Section */}
+                    {studentAssignments.length > 0 && (
+                      <div>
+                        <div style={{ fontWeight: 600, fontSize: 13, color: "var(--text-muted)", marginBottom: 8 }}>Assignments</div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {studentAssignments.map(assign => {
+                            const submission = submissions.find(s => s.assignment === assign.id);
+                            const isPast = assign.due_date && new Date(assign.due_date) < new Date();
+                            
+                            return (
+                              <div 
+                                key={`assign-${assign.id}`}
+                                style={{
+                                  border: "1px solid var(--border)",
+                                  borderRadius: 8,
+                                  padding: "10px 14px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  background: "var(--surface)",
+                                  fontSize: 13
+                                }}
+                              >
+                                <div>
+                                  <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 2 }}>
+                                    <span className="badge" style={{ fontSize: 9, padding: "2px 6px", background: "#e0ebff", color: "#1b75ff" }}>
+                                      Assignment
+                                    </span>
+                                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                                      {assign.course_name || `Course #${assign.course}`}
+                                    </span>
+                                  </div>
+                                  <h4 style={{ margin: 0, fontSize: 13.5, fontWeight: 600 }}>{assign.title}</h4>
+                                  <div style={{ fontSize: 11, color: isPast ? "var(--danger)" : "var(--text-muted)", marginTop: 4 }}>
+                                    Due: {assign.due_date ? new Date(assign.due_date).toLocaleString() : "No due date"}
+                                  </div>
+                                </div>
+
+                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                  {submission ? (
+                                    <span 
+                                      className={`badge ${submission.status === "evaluated" ? "success" : ""}`}
+                                      style={{ fontSize: 11, padding: "4px 8px" }}
+                                    >
+                                      {submission.status === "evaluated" 
+                                        ? `Graded: ${submission.marks_awarded}/${assign.max_marks} pts` 
+                                        : "Submitted"}
+                                    </span>
+                                  ) : (
+                                    <button 
+                                      className="btn secondary"
+                                      style={{ padding: "4px 10px", fontSize: 11 }}
+                                      onClick={() => navigate("/assignments")}
+                                    >
+                                      Submit
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Quizzes Section */}
+                    {studentQuizzes.length > 0 && (
+                      <div style={{ marginTop: 8 }}>
+                        <div style={{ fontWeight: 600, fontSize: 13, color: "var(--text-muted)", marginBottom: 8 }}>Quizzes</div>
+                        <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
+                          {studentQuizzes.map(quiz => {
+                            const attempt = attempts.find(a => a.quiz === quiz.id);
+                            
+                            return (
+                              <div 
+                                key={`quiz-${quiz.id}`}
+                                style={{
+                                  border: "1px solid var(--border)",
+                                  borderRadius: 8,
+                                  padding: "10px 14px",
+                                  display: "flex",
+                                  justifyContent: "space-between",
+                                  alignItems: "center",
+                                  background: "var(--surface)",
+                                  fontSize: 13
+                                }}
+                              >
+                                <div>
+                                  <div style={{ display: "flex", gap: 6, alignItems: "center", marginBottom: 2 }}>
+                                    <span className="badge" style={{ fontSize: 9, padding: "2px 6px", background: "#f3e8ff", color: "#8b5cf6" }}>
+                                      Quiz
+                                    </span>
+                                    <span style={{ fontSize: 11, color: "var(--text-muted)" }}>
+                                      {quiz.course_name || `Course #${quiz.course}`}
+                                    </span>
+                                  </div>
+                                  <h4 style={{ margin: 0, fontSize: 13.5, fontWeight: 600 }}>{quiz.title}</h4>
+                                  <div style={{ fontSize: 11, color: "var(--text-muted)", marginTop: 4 }}>
+                                    ⏱ Duration: {quiz.duration_minutes} Mins | {quiz.negative_marking ? "Negative marking enabled" : "No negative marking"}
+                                  </div>
+                                </div>
+
+                                <div style={{ display: "flex", alignItems: "center", gap: 10 }}>
+                                  {attempt ? (
+                                    <span className="badge success" style={{ fontSize: 11, padding: "4px 8px" }}>
+                                      Score: {attempt.score}%
+                                    </span>
+                                  ) : (
+                                    <button 
+                                      className="btn"
+                                      style={{ padding: "4px 10px", fontSize: 11 }}
+                                      onClick={() => navigate("/quizzes")}
+                                    >
+                                      Take Quiz
+                                    </button>
+                                  )}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    )}
+
+                  </div>
+                )}
               </div>
             )}
 
