@@ -9,6 +9,14 @@ export default function OtherCourses() {
   const [success, setSuccess] = useState("");
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedLevel, setSelectedLevel] = useState("all");
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const [selectedCourse, setSelectedCourse] = useState(null);
+  const [gateway, setGateway] = useState("stripe");
+  const [couponCode, setCouponCode] = useState("");
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [couponError, setCouponError] = useState("");
+  const [couponSuccess, setCouponSuccess] = useState("");
+  const [paymentLoading, setPaymentLoading] = useState(false);
 
   const loadData = async () => {
     setLoading(true);
@@ -54,6 +62,65 @@ export default function OtherCourses() {
       setError(e.response?.data?.detail ?? "Failed to enroll in the course.");
     }
   };
+
+  const handleEnrollClick = (course) => {
+    if (course.final_price > 0) {
+      setSelectedCourse(course);
+      setGateway("stripe");
+      setCouponCode("");
+      setAppliedCoupon(null);
+      setCouponError("");
+      setCouponSuccess("");
+      setShowPaymentModal(true);
+    } else {
+      handleEnroll(course.id);
+    }
+  };
+
+  const handleApplyCoupon = async () => {
+    if (!couponCode.trim()) return;
+    setCouponError("");
+    setCouponSuccess("");
+    try {
+      const res = await client.post("/payments/coupons/validate/", { code: couponCode });
+      setAppliedCoupon(res.data);
+      setCouponSuccess(`Coupon "${res.data.code}" applied! (${res.data.discount_percent}% off)`);
+    } catch (e) {
+      setAppliedCoupon(null);
+      setCouponError(e.response?.data?.detail ?? "Invalid or expired coupon.");
+    }
+  };
+
+  const handlePayment = async () => {
+    if (!selectedCourse) return;
+    setPaymentLoading(true);
+    setError("");
+    setSuccess("");
+    try {
+      await client.post("/payments/payments/", {
+        course: selectedCourse.id,
+        gateway: gateway,
+        amount: selectedCourse.final_price,
+        coupon: appliedCoupon ? appliedCoupon.id : null,
+      });
+      setSuccess(`Successfully enrolled in "${selectedCourse.name}"!`);
+      setShowPaymentModal(false);
+      loadData();
+    } catch (e) {
+      setError(e.response?.data?.detail ?? "Payment failed. Please try again.");
+      setShowPaymentModal(false);
+    } finally {
+      setPaymentLoading(false);
+    }
+  };
+
+  const basePrice = selectedCourse ? Number(selectedCourse.final_price) : 0;
+  const couponDiscountAmount = (selectedCourse && appliedCoupon) 
+    ? Number((basePrice * (Number(appliedCoupon.discount_percent) / 100)).toFixed(2)) 
+    : 0;
+  const discountedPrice = basePrice - couponDiscountAmount;
+  const gstAmount = Number((discountedPrice * 0.18).toFixed(2));
+  const totalPrice = Number((discountedPrice + gstAmount).toFixed(2));
 
   return (
     <div>
@@ -140,13 +207,132 @@ export default function OtherCourses() {
                 <button 
                   className="btn" 
                   style={{ width: "100%" }}
-                  onClick={() => handleEnroll(course.id)}
+                  onClick={() => handleEnrollClick(course)}
                 >
                   Enroll Now
                 </button>
               </div>
             </div>
           ))}
+        </div>
+      )}
+
+      {showPaymentModal && selectedCourse && (
+        <div style={{ position: "fixed", top: 0, left: 0, width: "100%", height: "100%", background: "rgba(0,0,0,0.6)", display: "flex", alignItems: "center", justifyContent: "center", zIndex: 3000 }}>
+          <div className="card" style={{ width: "90%", maxWidth: 450, padding: 24, background: "var(--surface)", position: "relative", boxShadow: "0 8px 32px rgba(0,0,0,0.15)" }}>
+            <button 
+              style={{ position: "absolute", right: 16, top: 16, background: "none", border: "none", fontSize: 20, cursor: "pointer", color: "var(--text-muted)" }}
+              onClick={() => setShowPaymentModal(false)}
+            >
+              ✕
+            </button>
+            <h3 style={{ margin: "0 0 16px 0", borderBottom: "1px solid var(--border)", paddingBottom: 12 }}>Course Checkout</h3>
+            
+            {/* Course Summary */}
+            <div style={{ background: "var(--background)", padding: 12, borderRadius: 8, marginBottom: 16 }}>
+              <div style={{ fontSize: 11, color: "var(--text-muted)", textTransform: "uppercase", fontWeight: 600 }}>You are purchasing</div>
+              <div style={{ fontSize: 16, fontWeight: 700, marginTop: 4 }}>{selectedCourse.name}</div>
+              <div style={{ fontSize: 12, color: "var(--text-muted)", marginTop: 2 }}>⏱ {selectedCourse.duration_weeks} Weeks • {selectedCourse.level}</div>
+            </div>
+
+            {/* Coupon Code Section */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Apply Promo / Coupon Code</label>
+              <div style={{ display: "flex", gap: 8 }}>
+                <input 
+                  type="text" 
+                  placeholder="e.g. DISCOUNT10" 
+                  className="form-input" 
+                  value={couponCode}
+                  onChange={(e) => setCouponCode(e.target.value.toUpperCase())}
+                  style={{ textTransform: "uppercase" }}
+                />
+                <button 
+                  type="button" 
+                  className="btn secondary" 
+                  onClick={handleApplyCoupon}
+                  style={{ padding: "8px 16px" }}
+                >
+                  Apply
+                </button>
+              </div>
+              {couponError && <div style={{ color: "var(--danger)", fontSize: 12, marginTop: 4 }}>✗ {couponError}</div>}
+              {couponSuccess && <div style={{ color: "var(--success)", fontSize: 12, marginTop: 4 }}>✓ {couponSuccess}</div>}
+            </div>
+
+            {/* Gateway Selection */}
+            <div style={{ marginBottom: 16 }}>
+              <label style={{ fontSize: 12, fontWeight: 600, color: "var(--text-muted)", display: "block", marginBottom: 6 }}>Select Payment Method</label>
+              <div style={{ display: "flex", gap: 12 }}>
+                {[
+                  { value: "stripe", label: "Stripe Credit Card" },
+                  { value: "razorpay", label: "Razorpay (UPI / NetBanking)" }
+                ].map(gw => (
+                  <div 
+                    key={gw.value}
+                    onClick={() => setGateway(gw.value)}
+                    style={{
+                      flex: 1,
+                      padding: 12,
+                      borderRadius: 8,
+                      border: `2px solid ${gateway === gw.value ? "#1b75ff" : "var(--border)"}`,
+                      background: gateway === gw.value ? "rgba(27, 117, 255, 0.05)" : "none",
+                      textAlign: "center",
+                      cursor: "pointer",
+                      fontWeight: 600,
+                      fontSize: 13,
+                      transition: "all 0.2s ease"
+                    }}
+                  >
+                    {gw.label}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Price Summary Sheet */}
+            <div style={{ borderTop: "1px solid var(--border)", paddingTop: 12, display: "flex", flexDirection: "column", gap: 8, fontSize: 13, marginBottom: 20 }}>
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "var(--text-muted)" }}>Course price:</span>
+                <span>${basePrice.toFixed(2)}</span>
+              </div>
+              {appliedCoupon && (
+                <div style={{ display: "flex", justifyContent: "space-between", color: "var(--success)" }}>
+                  <span>Coupon discount ({appliedCoupon.discount_percent}%):</span>
+                  <span>-${couponDiscountAmount.toFixed(2)}</span>
+                </div>
+              )}
+              <div style={{ display: "flex", justifyContent: "space-between" }}>
+                <span style={{ color: "var(--text-muted)" }}>GST (18%):</span>
+                <span>${gstAmount.toFixed(2)}</span>
+              </div>
+              <div style={{ display: "flex", justifyContent: "space-between", fontSize: 16, fontWeight: 700, borderTop: "1px solid var(--border)", paddingTop: 8, marginTop: 4 }}>
+                <span>Total amount:</span>
+                <span style={{ color: "#1b75ff" }}>${totalPrice.toFixed(2)}</span>
+              </div>
+            </div>
+
+            {/* Checkout Actions */}
+            <div style={{ display: "flex", gap: 12 }}>
+              <button 
+                type="button" 
+                className="btn secondary" 
+                onClick={() => setShowPaymentModal(false)}
+                style={{ flex: 1 }}
+              >
+                Cancel
+              </button>
+              <button 
+                type="button" 
+                className="btn" 
+                onClick={handlePayment}
+                disabled={paymentLoading}
+                style={{ flex: 2 }}
+              >
+                {paymentLoading ? "Processing..." : `Pay & Enroll ($${totalPrice.toFixed(2)})`}
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -12,6 +12,23 @@ class CouponViewSet(viewsets.ModelViewSet):
     serializer_class = CouponSerializer
     permission_classes = [IsAdminOrSuperAdmin]
 
+    @action(detail=False, methods=["post"], permission_classes=[permissions.IsAuthenticated])
+    def validate(self, request):
+        code = request.data.get("code")
+        if not code:
+            return Response({"detail": "Coupon code is required."}, status=400)
+        try:
+            coupon = Coupon.objects.get(code__iexact=code, active=True, valid_until__gt=timezone.now())
+            if coupon.used_count >= coupon.max_uses:
+                return Response({"detail": "Coupon usage limit reached."}, status=400)
+            return Response({
+                "id": coupon.id,
+                "code": coupon.code,
+                "discount_percent": coupon.discount_percent,
+            })
+        except Coupon.DoesNotExist:
+            return Response({"detail": "Invalid or expired coupon code."}, status=400)
+
 
 class PaymentViewSet(viewsets.ModelViewSet):
     """
@@ -33,6 +50,13 @@ class PaymentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         payment = serializer.save(student=self.request.user, status=Payment.Status.SUCCESS)
         Invoice.objects.create(payment=payment)
+        
+        # Auto-enroll student upon successful payment
+        from students.models import Enrollment
+        Enrollment.objects.get_or_create(
+            student=self.request.user,
+            course=payment.course
+        )
 
 
 class InvoiceViewSet(viewsets.ReadOnlyModelViewSet):
