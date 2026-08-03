@@ -7,6 +7,9 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Prevent SynchronousOnlyOperation on Vercel serverless environment
+os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret-key-change-in-production")
 
 DEBUG = True
@@ -29,6 +32,7 @@ INSTALLED_APPS = [
     "rest_framework_simplejwt",
     "corsheaders",
     "django_filters",
+    "drf_spectacular",
 
     # local apps
     "accounts",
@@ -100,8 +104,7 @@ if use_sqlite and not has_postgres_env:
         except Exception as e:
             pass
         
-        if tmp_db_path.exists():
-            db_path = tmp_db_path
+        db_path = tmp_db_path
 
     DATABASES = {
         "default": {
@@ -172,6 +175,7 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
     "PAGE_SIZE": 20,
+    "DEFAULT_SCHEMA_CLASS": "drf_spectacular.openapi.AutoSchema",
 }
 
 SIMPLE_JWT = {
@@ -180,6 +184,13 @@ SIMPLE_JWT = {
     "ROTATE_REFRESH_TOKENS": True,
     "BLACKLIST_AFTER_ROTATION": True,
     "AUTH_HEADER_TYPES": ("Bearer",),
+}
+
+SPECTACULAR_SETTINGS = {
+    "TITLE": "Enterprise LMS API",
+    "DESCRIPTION": "Complete API documentation for the Enterprise Learning Management System (LMS).",
+    "VERSION": "1.0.0",
+    "SERVE_INCLUDE_SCHEMA": False,
 }
 
 # ------------------------------------------------------------------
