@@ -41,7 +41,6 @@ const STUDENT_SECTIONS = [
     items: [
       { to: "/taskflow", label: "Taskflow", icon: "taskflow" },
       { to: "/invite-earn", label: "Invite and Earn", icon: "gift" },
-      { to: "/payments", label: "Payments", icon: "payments" },
     ],
   },
 ];
