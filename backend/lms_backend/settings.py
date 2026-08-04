@@ -81,13 +81,39 @@ WSGI_APPLICATION = "lms_backend.wsgi.application"
 # ------------------------------------------------------------------
 # Database — PostgreSQL by default, falls back to SQLite for local dev
 # ------------------------------------------------------------------
-# Use SQLite if explicitly requested or if no Postgres database variables are provided.
-# If running on Vercel, copy the SQLite database to /tmp/db.sqlite3 (a writable directory)
-# so it can be successfully opened and written to during requests.
-has_postgres_env = bool(os.environ.get("DB_HOST"))
-use_sqlite = os.environ.get("USE_SQLITE", "true").lower() == "true"
+database_url = os.environ.get("DATABASE_URL")
+has_postgres_env = bool(os.environ.get("DB_HOST")) or bool(database_url)
+use_sqlite = os.environ.get("USE_SQLITE", "").lower() == "true" if "USE_SQLITE" in os.environ else not has_postgres_env
 
-if use_sqlite and not has_postgres_env:
+if not use_sqlite and has_postgres_env:
+    if database_url:
+        import urllib.parse
+        url = urllib.parse.urlparse(database_url)
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": url.path.lstrip("/"),
+                "USER": url.username or "",
+                "PASSWORD": urllib.parse.unquote(url.password or ""),
+                "HOST": url.hostname or "localhost",
+                "PORT": str(url.port or 5432),
+            }
+        }
+        if "sslmode" in url.query:
+            sslmode = urllib.parse.parse_qs(url.query).get("sslmode", ["prefer"])[0]
+            DATABASES["default"]["OPTIONS"] = {"sslmode": sslmode}
+    else:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": os.environ.get("DB_NAME", "postgres"),
+                "USER": os.environ.get("DB_USER", "postgres"),
+                "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+                "HOST": os.environ.get("DB_HOST", "localhost"),
+                "PORT": os.environ.get("DB_PORT", "5432"),
+            }
+        }
+else:
     db_path = BASE_DIR / "db.sqlite3"
     
     if os.environ.get("VERCEL") == "1":
@@ -110,17 +136,6 @@ if use_sqlite and not has_postgres_env:
         "default": {
             "ENGINE": "django.db.backends.sqlite3",
             "NAME": db_path,
-        }
-    }
-else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.environ.get("DB_NAME", "postgres"),
-            "USER": os.environ.get("DB_USER", "postgres"),
-            "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-            "HOST": os.environ.get("DB_HOST", "localhost"),
-            "PORT": os.environ.get("DB_PORT", "5432"),
         }
     }
 
