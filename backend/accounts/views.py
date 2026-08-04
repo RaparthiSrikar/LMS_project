@@ -1,4 +1,6 @@
 from django.utils import timezone
+from django.core.mail import send_mail
+from django.conf import settings
 from rest_framework import generics, status, viewsets
 from rest_framework.decorators import action
 from rest_framework.permissions import AllowAny, IsAuthenticated
@@ -70,7 +72,30 @@ class SendOTPView(APIView):
             return Response({"detail": "No account with that email."}, status=404)
         otp = OTP.objects.create(user=user, code=OTP.generate_code(), purpose=purpose)
         print(f"[DEV] OTP for {user.email} ({purpose}): {otp.code}")
-        return Response({"detail": "OTP sent."})
+
+        subject = f"Your Verification Code: {otp.code}"
+        message = (
+            f"Hello {user.first_name or user.username},\n\n"
+            f"Your verification code for {purpose.replace('_', ' ').title()} is: {otp.code}\n\n"
+            f"This code will expire in 10 minutes.\n\n"
+            f"Best regards,\nEnterprise LMS Team"
+        )
+        try:
+            send_mail(
+                subject,
+                message,
+                getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@enterprise-lms.com"),
+                [user.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Failed to send OTP email: {e}")
+
+        resp_data = {"detail": "OTP sent to your email address."}
+        if settings.DEBUG:
+            resp_data["code"] = otp.code
+
+        return Response(resp_data)
 
 
 class VerifyOTPView(APIView):
@@ -113,6 +138,26 @@ class ForgotPasswordView(APIView):
         if user:
             reset = PasswordResetToken.objects.create(user=user, expires_at=None)
             print(f"[DEV] Password reset link for {user.email}: /reset-password?token={reset.token}")
+            
+            subject = "Password Reset Request - Enterprise LMS"
+            reset_url = f"/reset-password?token={reset.token}"
+            message = (
+                f"Hello {user.first_name or user.username},\n\n"
+                f"You requested a password reset. Use the link below to set a new password:\n\n"
+                f"{reset_url}\n\n"
+                f"This link will expire in 1 hour."
+            )
+            try:
+                send_mail(
+                    subject,
+                    message,
+                    getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@enterprise-lms.com"),
+                    [user.email],
+                    fail_silently=True,
+                )
+            except Exception as e:
+                print(f"Failed to send reset email: {e}")
+
         # Always return 200 to avoid leaking which emails exist
         return Response({"detail": "If that email exists, a reset link has been sent."})
 

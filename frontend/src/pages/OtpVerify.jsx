@@ -29,11 +29,15 @@ export default function OtpVerify() {
     setError("");
     setSuccess("");
     try {
-      await client.post("/auth/otp/send/", {
+      const { data } = await client.post("/auth/otp/send/", {
         email,
         purpose: "email_verification",
       });
-      setSuccess("Verification code resent successfully!");
+      if (data?.code) {
+        setSuccess(`Verification code sent! (Dev Mode OTP: ${data.code})`);
+      } else {
+        setSuccess("Verification code sent successfully! Check your inbox.");
+      }
       setCooldown(30); // 30-second cooldown
     } catch (e) {
       setError(e.response?.data?.detail || "Failed to resend OTP. Please try again.");

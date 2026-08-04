@@ -1,6 +1,8 @@
 from django.contrib.auth import authenticate
 from django.contrib.auth.password_validation import validate_password
 from django.db.models import Q
+from django.core.mail import send_mail
+from django.conf import settings
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
 
@@ -33,6 +35,26 @@ class RegisterSerializer(serializers.ModelSerializer):
         # issue an email-verification OTP
         otp = OTP.objects.create(user=user, code=OTP.generate_code(), purpose=OTP.Purpose.EMAIL_VERIFICATION)
         print(f"[DEV] Email verification OTP for {user.email}: {otp.code}")
+        
+        subject = f"Verify your email - Enterprise LMS (Code: {otp.code})"
+        message = (
+            f"Hello {user.first_name or user.username},\n\n"
+            f"Thank you for registering at Enterprise LMS.\n"
+            f"Your email verification code is: {otp.code}\n\n"
+            f"This code will expire in 10 minutes.\n\n"
+            f"Best regards,\nEnterprise LMS Team"
+        )
+        try:
+            send_mail(
+                subject,
+                message,
+                getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@enterprise-lms.com"),
+                [user.email],
+                fail_silently=True,
+            )
+        except Exception as e:
+            print(f"Failed to send verification email: {e}")
+
         return user
 
 

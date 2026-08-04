@@ -24,8 +24,9 @@ export default function Register() {
     setError("");
     setSuccess("");
     try {
-      await client.post("/auth/otp/send/", { email: form.email, purpose: "email_verification" });
-      setSuccess("Verification code sent! Redirecting to OTP verification screen...");
+      const { data } = await client.post("/auth/otp/send/", { email: form.email, purpose: "email_verification" });
+      const devNotice = data?.code ? ` (Dev Mode OTP: ${data.code})` : "";
+      setSuccess(`Verification code sent!${devNotice} Redirecting to OTP verification screen...`);
       setTimeout(() => {
         navigate("/verify-otp", { state: { email: form.email } });
       }, 1500);
