@@ -30,31 +30,8 @@ class RegisterSerializer(serializers.ModelSerializer):
         password = validated_data.pop("password")
         user = User(**validated_data)
         user.set_password(password)
-        user.is_email_verified = False
+        user.is_email_verified = True
         user.save()
-        # issue an email-verification OTP
-        otp = OTP.objects.create(user=user, code=OTP.generate_code(), purpose=OTP.Purpose.EMAIL_VERIFICATION)
-        print(f"[DEV] Email verification OTP for {user.email}: {otp.code}")
-        
-        subject = f"Verify your email - Enterprise LMS (Code: {otp.code})"
-        message = (
-            f"Hello {user.first_name or user.username},\n\n"
-            f"Thank you for registering at Enterprise LMS.\n"
-            f"Your email verification code is: {otp.code}\n\n"
-            f"This code will expire in 10 minutes.\n\n"
-            f"Best regards,\nEnterprise LMS Team"
-        )
-        try:
-            send_mail(
-                subject,
-                message,
-                getattr(settings, "DEFAULT_FROM_EMAIL", "noreply@enterprise-lms.com"),
-                [user.email],
-                fail_silently=True,
-            )
-        except Exception as e:
-            print(f"Failed to send verification email: {e}")
-
         return user
 
 
@@ -72,8 +49,6 @@ class LoginSerializer(serializers.Serializer):
 
         if not user or not user.check_password(password):
             raise serializers.ValidationError("Invalid email/username or password.")
-        if not user.is_email_verified:
-            raise serializers.ValidationError("Please verify your email address before logging in.")
         if not user.is_active_account:
             raise serializers.ValidationError("This account has been deactivated.")
         

@@ -1,0 +1,5736 @@
+openapi: 3.0.3
+info:
+  title: Enterprise LMS API
+  version: 1.0.0
+  description: Complete API documentation for the Enterprise Learning Management System
+    (LMS).
+paths:
+  /api/assignments/assignments/:
+    get:
+      operationId: assignments_assignments_list
+      description: 'Trainer: create assignment, upload files, set due date, assign
+        marks.'
+      parameters:
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - assignments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAssignmentList'
+          description: ''
+    post:
+      operationId: assignments_assignments_create
+      description: 'Trainer: create assignment, upload files, set due date, assign
+        marks.'
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+  /api/assignments/assignments/{id}/:
+    get:
+      operationId: assignments_assignments_retrieve
+      description: 'Trainer: create assignment, upload files, set due date, assign
+        marks.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this assignment.
+        required: true
+      tags:
+      - assignments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    put:
+      operationId: assignments_assignments_update
+      description: 'Trainer: create assignment, upload files, set due date, assign
+        marks.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this assignment.
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Assignment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    patch:
+      operationId: assignments_assignments_partial_update
+      description: 'Trainer: create assignment, upload files, set due date, assign
+        marks.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this assignment.
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAssignment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAssignment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAssignment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Assignment'
+          description: ''
+    delete:
+      operationId: assignments_assignments_destroy
+      description: 'Trainer: create assignment, upload files, set due date, assign
+        marks.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this assignment.
+        required: true
+      tags:
+      - assignments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/assignments/submissions/:
+    get:
+      operationId: assignments_submissions_list
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - assignments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedSubmissionList'
+          description: ''
+    post:
+      operationId: assignments_submissions_create
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Submission'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/assignments/submissions/{id}/:
+    get:
+      operationId: assignments_submissions_retrieve
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - assignments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+    put:
+      operationId: assignments_submissions_update
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Submission'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+    patch:
+      operationId: assignments_submissions_partial_update
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedSubmission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedSubmission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedSubmission'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+    delete:
+      operationId: assignments_submissions_destroy
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - assignments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/assignments/submissions/{id}/evaluate/:
+    post:
+      operationId: assignments_submissions_evaluate_create
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Submission'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/assignments/submissions/{id}/publish-result/:
+    post:
+      operationId: assignments_submissions_publish_result_create
+      description: 'Student: submit / resubmit. Trainer: evaluate, add remarks, publish
+        result.'
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - assignments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Submission'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Submission'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submission'
+          description: ''
+  /api/auth/login/:
+    post:
+      operationId: auth_login_create
+      description: Login — returns JWT access + refresh tokens.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/logout/:
+    post:
+      operationId: auth_logout_create
+      description: Logout — blacklists the refresh token.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/me/:
+    get:
+      operationId: auth_me_retrieve
+      description: Current authenticated user's profile.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+    patch:
+      operationId: auth_me_partial_update
+      description: Current authenticated user's profile.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/otp/send/:
+    post:
+      operationId: auth_otp_send_create
+      description: Request a fresh OTP (email verification or login OTP).
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/otp/verify/:
+    post:
+      operationId: auth_otp_verify_create
+      description: Verify Email / OTP-based login.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/password/change/:
+    post:
+      operationId: auth_password_change_create
+      description: Authenticated user changes their own password.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/auth/password/forgot/:
+    post:
+      operationId: auth_password_forgot_create
+      description: Sends a password-reset token/link to the user's email.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/password/reset/:
+    post:
+      operationId: auth_password_reset_create
+      description: Consumes a reset token and sets a new password.
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '200':
+          description: No response body
+  /api/auth/register/:
+    post:
+      operationId: auth_register_create
+      description: User Registration.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Register'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Register'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Register'
+        required: true
+      security:
+      - jwtAuth: []
+      - {}
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Register'
+          description: ''
+  /api/auth/token/refresh/:
+    post:
+      operationId: auth_token_refresh_create
+      description: |-
+        Takes a refresh type JSON web token and returns an access type JSON web
+        token if the refresh token is valid.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/TokenRefresh'
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenRefresh'
+          description: ''
+  /api/auth/users/:
+    get:
+      operationId: auth_users_list
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: query
+        name: is_active_account
+        schema:
+          type: boolean
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: role
+        schema:
+          type: string
+          enum:
+          - admin
+          - hr
+          - student
+          - super_admin
+          - trainer
+        description: |-
+          * `super_admin` - Super Admin
+          * `admin` - Admin
+          * `trainer` - Trainer
+          * `student` - Student
+          * `hr` - HR
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedUserList'
+          description: ''
+    post:
+      operationId: auth_users_create
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/auth/users/{id}/:
+    get:
+      operationId: auth_users_retrieve
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    put:
+      operationId: auth_users_update
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    patch:
+      operationId: auth_users_partial_update
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedUser'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+    delete:
+      operationId: auth_users_destroy
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/auth/users/{id}/activate/:
+    post:
+      operationId: auth_users_activate_create
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/auth/users/{id}/deactivate/:
+    post:
+      operationId: auth_users_deactivate_create
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/auth/users/{id}/reset-password/:
+    post:
+      operationId: auth_users_reset_password_create
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/auth/users/{id}/upload-profile-picture/:
+    post:
+      operationId: auth_users_upload_profile_picture_create
+      description: |-
+        Module 2 — User Management (Admin only).
+        Create / edit / delete / activate / reset-password / upload-profile-picture.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this user.
+        required: true
+      tags:
+      - auth
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/User'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/User'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+          description: ''
+  /api/courses/categories/:
+    get:
+      operationId: courses_categories_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCategoryList'
+          description: ''
+    post:
+      operationId: courses_categories_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+  /api/courses/categories/{id}/:
+    get:
+      operationId: courses_categories_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    put:
+      operationId: courses_categories_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Category'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Category'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    patch:
+      operationId: courses_categories_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCategory'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Category'
+          description: ''
+    delete:
+      operationId: courses_categories_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this category.
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/courses/courses/:
+    get:
+      operationId: courses_courses_list
+      description: Module 5 — Course Management (create/update/delete restricted to
+        trainer/admin).
+      parameters:
+      - in: query
+        name: category
+        schema:
+          type: integer
+      - in: query
+        name: is_published
+        schema:
+          type: boolean
+      - in: query
+        name: level
+        schema:
+          type: string
+          enum:
+          - advanced
+          - beginner
+          - intermediate
+        description: |-
+          * `beginner` - Beginner
+          * `intermediate` - Intermediate
+          * `advanced` - Advanced
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      - in: query
+        name: trainer
+        schema:
+          type: integer
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCourseList'
+          description: ''
+    post:
+      operationId: courses_courses_create
+      description: Module 5 — Course Management (create/update/delete restricted to
+        trainer/admin).
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+  /api/courses/courses/{id}/:
+    get:
+      operationId: courses_courses_retrieve
+      description: Module 5 — Course Management (create/update/delete restricted to
+        trainer/admin).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    put:
+      operationId: courses_courses_update
+      description: Module 5 — Course Management (create/update/delete restricted to
+        trainer/admin).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Course'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Course'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Course'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    patch:
+      operationId: courses_courses_partial_update
+      description: Module 5 — Course Management (create/update/delete restricted to
+        trainer/admin).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCourse'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Course'
+          description: ''
+    delete:
+      operationId: courses_courses_destroy
+      description: Module 5 — Course Management (create/update/delete restricted to
+        trainer/admin).
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this course.
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/courses/tags/:
+    get:
+      operationId: courses_tags_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedTagList'
+          description: ''
+    post:
+      operationId: courses_tags_create
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tag'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+  /api/courses/tags/{id}/:
+    get:
+      operationId: courses_tags_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    put:
+      operationId: courses_tags_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Tag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Tag'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    patch:
+      operationId: courses_tags_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - courses
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedTag'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedTag'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedTag'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Tag'
+          description: ''
+    delete:
+      operationId: courses_tags_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this tag.
+        required: true
+      tags:
+      - courses
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/dashboard/admin/:
+    get:
+      operationId: dashboard_admin_retrieve
+      description: Module 9 — Admin Dashboard cards.
+      tags:
+      - dashboard
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/dashboard/trainer/:
+    get:
+      operationId: dashboard_trainer_retrieve
+      description: Module 9 — Trainer Dashboard metrics and lists.
+      tags:
+      - dashboard
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/payments/coupons/:
+    get:
+      operationId: payments_coupons_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedCouponList'
+          description: ''
+    post:
+      operationId: payments_coupons_create
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+  /api/payments/coupons/{id}/:
+    get:
+      operationId: payments_coupons_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this coupon.
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+    put:
+      operationId: payments_coupons_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this coupon.
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+    patch:
+      operationId: payments_coupons_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this coupon.
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedCoupon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedCoupon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedCoupon'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+    delete:
+      operationId: payments_coupons_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this coupon.
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/payments/coupons/validate/:
+    post:
+      operationId: payments_coupons_validate_create
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Coupon'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Coupon'
+          description: ''
+  /api/payments/invoices/:
+    get:
+      operationId: payments_invoices_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedInvoiceList'
+          description: ''
+  /api/payments/invoices/{id}/:
+    get:
+      operationId: payments_invoices_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Invoice'
+          description: ''
+  /api/payments/payments/:
+    get:
+      operationId: payments_payments_list
+      description: |-
+        Purchase Course. In production this integrates with the real
+        Stripe/Razorpay SDKs server-side using STRIPE_SECRET_KEY / RAZORPAY_KEY_*
+        from settings; here we record the transaction and auto-generate an invoice.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedPaymentList'
+          description: ''
+    post:
+      operationId: payments_payments_create
+      description: |-
+        Purchase Course. In production this integrates with the real
+        Stripe/Razorpay SDKs server-side using STRIPE_SECRET_KEY / RAZORPAY_KEY_*
+        from settings; here we record the transaction and auto-generate an invoice.
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Payment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Payment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+  /api/payments/payments/{id}/:
+    get:
+      operationId: payments_payments_retrieve
+      description: |-
+        Purchase Course. In production this integrates with the real
+        Stripe/Razorpay SDKs server-side using STRIPE_SECRET_KEY / RAZORPAY_KEY_*
+        from settings; here we record the transaction and auto-generate an invoice.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+    put:
+      operationId: payments_payments_update
+      description: |-
+        Purchase Course. In production this integrates with the real
+        Stripe/Razorpay SDKs server-side using STRIPE_SECRET_KEY / RAZORPAY_KEY_*
+        from settings; here we record the transaction and auto-generate an invoice.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Payment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Payment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Payment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+    patch:
+      operationId: payments_payments_partial_update
+      description: |-
+        Purchase Course. In production this integrates with the real
+        Stripe/Razorpay SDKs server-side using STRIPE_SECRET_KEY / RAZORPAY_KEY_*
+        from settings; here we record the transaction and auto-generate an invoice.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedPayment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedPayment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedPayment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Payment'
+          description: ''
+    delete:
+      operationId: payments_payments_destroy
+      description: |-
+        Purchase Course. In production this integrates with the real
+        Stripe/Razorpay SDKs server-side using STRIPE_SECRET_KEY / RAZORPAY_KEY_*
+        from settings; here we record the transaction and auto-generate an invoice.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/payments/refunds/:
+    get:
+      operationId: payments_refunds_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedRefundList'
+          description: ''
+    post:
+      operationId: payments_refunds_create
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Refund'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/payments/refunds/{id}/:
+    get:
+      operationId: payments_refunds_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+    put:
+      operationId: payments_refunds_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Refund'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+    patch:
+      operationId: payments_refunds_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedRefund'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedRefund'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedRefund'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+    delete:
+      operationId: payments_refunds_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/payments/refunds/{id}/approve/:
+    post:
+      operationId: payments_refunds_approve_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Refund'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/payments/refunds/{id}/reject/:
+    post:
+      operationId: payments_refunds_reject_create
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - payments
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Refund'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Refund'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refund'
+          description: ''
+  /api/quizzes/answers/:
+    get:
+      operationId: quizzes_answers_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnswerList'
+          description: ''
+    post:
+      operationId: quizzes_answers_create
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+  /api/quizzes/answers/{id}/:
+    get:
+      operationId: quizzes_answers_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    put:
+      operationId: quizzes_answers_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Answer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Answer'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    patch:
+      operationId: quizzes_answers_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAnswer'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAnswer'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAnswer'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Answer'
+          description: ''
+    delete:
+      operationId: quizzes_answers_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/quizzes/attempts/:
+    get:
+      operationId: quizzes_attempts_list
+      description: Student takes a timed quiz; auto-evaluation with negative marking
+        on submit.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuizAttemptList'
+          description: ''
+    post:
+      operationId: quizzes_attempts_create
+      description: Student takes a timed quiz; auto-evaluation with negative marking
+        on submit.
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizAttempt'
+          description: ''
+  /api/quizzes/attempts/{id}/:
+    get:
+      operationId: quizzes_attempts_retrieve
+      description: Student takes a timed quiz; auto-evaluation with negative marking
+        on submit.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizAttempt'
+          description: ''
+    put:
+      operationId: quizzes_attempts_update
+      description: Student takes a timed quiz; auto-evaluation with negative marking
+        on submit.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizAttempt'
+          description: ''
+    patch:
+      operationId: quizzes_attempts_partial_update
+      description: Student takes a timed quiz; auto-evaluation with negative marking
+        on submit.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuizAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuizAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuizAttempt'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizAttempt'
+          description: ''
+    delete:
+      operationId: quizzes_attempts_destroy
+      description: Student takes a timed quiz; auto-evaluation with negative marking
+        on submit.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/quizzes/attempts/{id}/submit/:
+    post:
+      operationId: quizzes_attempts_submit_create
+      description: Auto-evaluate MCQ / True-False answers with negative marking. Coding
+        Qs left for manual review.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/QuizAttempt'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QuizAttempt'
+          description: ''
+  /api/quizzes/questions/:
+    get:
+      operationId: quizzes_questions_list
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - in: query
+        name: quiz
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuestionList'
+          description: ''
+    post:
+      operationId: quizzes_questions_create
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Question'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+  /api/quizzes/questions/{id}/:
+    get:
+      operationId: quizzes_questions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    put:
+      operationId: quizzes_questions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Question'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Question'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Question'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    patch:
+      operationId: quizzes_questions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestion'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestion'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuestion'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Question'
+          description: ''
+    delete:
+      operationId: quizzes_questions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this question.
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/quizzes/quizzes/:
+    get:
+      operationId: quizzes_quizzes_list
+      parameters:
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedQuizList'
+          description: ''
+    post:
+      operationId: quizzes_quizzes_create
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+  /api/quizzes/quizzes/{id}/:
+    get:
+      operationId: quizzes_quizzes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    put:
+      operationId: quizzes_quizzes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Quiz'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    patch:
+      operationId: quizzes_quizzes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      tags:
+      - quizzes
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedQuiz'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+    delete:
+      operationId: quizzes_quizzes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/quizzes/quizzes/{id}/leaderboard/:
+    get:
+      operationId: quizzes_quizzes_leaderboard_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this quiz.
+        required: true
+      tags:
+      - quizzes
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Quiz'
+          description: ''
+  /api/reports/assignments/:
+    get:
+      operationId: reports_assignments_retrieve
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/reports/attendance/:
+    get:
+      operationId: reports_attendance_retrieve
+      description: Approximated via enrollment/progress data (attendance system not
+        modeled separately).
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/reports/quizzes/:
+    get:
+      operationId: reports_quizzes_retrieve
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/reports/students/:
+    get:
+      operationId: reports_students_retrieve
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/reports/trainer-performance/:
+    get:
+      operationId: reports_trainer_performance_retrieve
+      tags:
+      - reports
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          description: No response body
+  /api/students/enrollments/:
+    get:
+      operationId: students_enrollments_list
+      description: Register / Enroll in courses / Track progress.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedEnrollmentList'
+          description: ''
+    post:
+      operationId: students_enrollments_create
+      description: Register / Enroll in courses / Track progress.
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+  /api/students/enrollments/{id}/:
+    get:
+      operationId: students_enrollments_retrieve
+      description: Register / Enroll in courses / Track progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    put:
+      operationId: students_enrollments_update
+      description: Register / Enroll in courses / Track progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Enrollment'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    patch:
+      operationId: students_enrollments_partial_update
+      description: Register / Enroll in courses / Track progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollment'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollment'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedEnrollment'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+    delete:
+      operationId: students_enrollments_destroy
+      description: Register / Enroll in courses / Track progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/students/enrollments/{id}/certificate/:
+    get:
+      operationId: students_enrollments_certificate_retrieve
+      description: Register / Enroll in courses / Track progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+  /api/students/enrollments/calendar/:
+    get:
+      operationId: students_enrollments_calendar_retrieve
+      description: Register / Enroll in courses / Track progress.
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Enrollment'
+          description: ''
+  /api/students/video-progress/:
+    get:
+      operationId: students_video_progress_list
+      description: Watch videos -> mark progress.
+      parameters:
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVideoProgressList'
+          description: ''
+    post:
+      operationId: students_video_progress_create
+      description: Watch videos -> mark progress.
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoProgress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VideoProgress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VideoProgress'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoProgress'
+          description: ''
+  /api/students/video-progress/{id}/:
+    get:
+      operationId: students_video_progress_retrieve
+      description: Watch videos -> mark progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoProgress'
+          description: ''
+    put:
+      operationId: students_video_progress_update
+      description: Watch videos -> mark progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/VideoProgress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/VideoProgress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/VideoProgress'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoProgress'
+          description: ''
+    patch:
+      operationId: students_video_progress_partial_update
+      description: Watch videos -> mark progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVideoProgress'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVideoProgress'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVideoProgress'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VideoProgress'
+          description: ''
+    delete:
+      operationId: students_video_progress_destroy
+      description: Watch videos -> mark progress.
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: string
+        required: true
+      tags:
+      - students
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/trainers/announcements/:
+    get:
+      operationId: trainers_announcements_list
+      parameters:
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedAnnouncementList'
+          description: ''
+    post:
+      operationId: trainers_announcements_create
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Announcement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Announcement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Announcement'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+  /api/trainers/announcements/{id}/:
+    get:
+      operationId: trainers_announcements_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this announcement.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+    put:
+      operationId: trainers_announcements_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this announcement.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Announcement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Announcement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Announcement'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+    patch:
+      operationId: trainers_announcements_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this announcement.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncement'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncement'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedAnnouncement'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Announcement'
+          description: ''
+    delete:
+      operationId: trainers_announcements_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this announcement.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/trainers/live-sessions/:
+    get:
+      operationId: trainers_live_sessions_list
+      parameters:
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedLiveSessionList'
+          description: ''
+    post:
+      operationId: trainers_live_sessions_create
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveSession'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LiveSession'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LiveSession'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveSession'
+          description: ''
+  /api/trainers/live-sessions/{id}/:
+    get:
+      operationId: trainers_live_sessions_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this live session.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveSession'
+          description: ''
+    put:
+      operationId: trainers_live_sessions_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this live session.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LiveSession'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/LiveSession'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/LiveSession'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveSession'
+          description: ''
+    patch:
+      operationId: trainers_live_sessions_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this live session.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedLiveSession'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedLiveSession'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedLiveSession'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LiveSession'
+          description: ''
+    delete:
+      operationId: trainers_live_sessions_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this live session.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/trainers/notes/:
+    get:
+      operationId: trainers_notes_list
+      parameters:
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedNoteList'
+          description: ''
+    post:
+      operationId: trainers_notes_create
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Note'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Note'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+  /api/trainers/notes/{id}/:
+    get:
+      operationId: trainers_notes_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this note.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+    put:
+      operationId: trainers_notes_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this note.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Note'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Note'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Note'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+    patch:
+      operationId: trainers_notes_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this note.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedNote'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Note'
+          description: ''
+    delete:
+      operationId: trainers_notes_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this note.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+  /api/trainers/videos/:
+    get:
+      operationId: trainers_videos_list
+      parameters:
+      - in: query
+        name: course
+        schema:
+          type: integer
+      - name: ordering
+        required: false
+        in: query
+        description: Which field to use when ordering the results.
+        schema:
+          type: string
+      - name: page
+        required: false
+        in: query
+        description: A page number within the paginated result set.
+        schema:
+          type: integer
+      - name: search
+        required: false
+        in: query
+        description: A search term.
+        schema:
+          type: string
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PaginatedVideoList'
+          description: ''
+    post:
+      operationId: trainers_videos_create
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Video'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Video'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '201':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+  /api/trainers/videos/{id}/:
+    get:
+      operationId: trainers_videos_retrieve
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this video.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+    put:
+      operationId: trainers_videos_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this video.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Video'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/Video'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/Video'
+        required: true
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+    patch:
+      operationId: trainers_videos_partial_update
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this video.
+        required: true
+      tags:
+      - trainers
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PatchedVideo'
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: '#/components/schemas/PatchedVideo'
+          multipart/form-data:
+            schema:
+              $ref: '#/components/schemas/PatchedVideo'
+      security:
+      - jwtAuth: []
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Video'
+          description: ''
+    delete:
+      operationId: trainers_videos_destroy
+      parameters:
+      - in: path
+        name: id
+        schema:
+          type: integer
+        description: A unique integer value identifying this video.
+        required: true
+      tags:
+      - trainers
+      security:
+      - jwtAuth: []
+      responses:
+        '204':
+          description: No response body
+components:
+  schemas:
+    Announcement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        trainer:
+          type: integer
+          readOnly: true
+        trainer_name:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        message:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course
+      - id
+      - message
+      - published_at
+      - title
+      - trainer
+      - trainer_name
+    Answer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        attempt:
+          type: integer
+        question:
+          type: integer
+        selected_choice:
+          type: integer
+          nullable: true
+        code_answer:
+          type: string
+        is_correct:
+          type: boolean
+          readOnly: true
+          nullable: true
+      required:
+      - attempt
+      - id
+      - is_correct
+      - question
+    Assignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        course_name:
+          type: string
+          readOnly: true
+        trainer:
+          type: integer
+          readOnly: true
+        trainer_name:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        file:
+          type: string
+          format: uri
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+        max_marks:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        date:
+          type: string
+          format: date
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course
+      - course_name
+      - created_at
+      - due_date
+      - id
+      - title
+      - trainer
+      - trainer_name
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+      required:
+      - id
+      - name
+    Choice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        text:
+          type: string
+          maxLength: 500
+        is_correct:
+          type: boolean
+      required:
+      - id
+      - text
+    Coupon:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        discount_percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        valid_until:
+          type: string
+          format: date-time
+        max_uses:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        used_count:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        active:
+          type: boolean
+      required:
+      - code
+      - discount_percent
+      - id
+      - valid_until
+    Course:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        category:
+          type: integer
+          nullable: true
+        category_name:
+          type: string
+          readOnly: true
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        duration_weeks:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        discount_percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        final_price:
+          type: string
+          readOnly: true
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+        banner:
+          type: string
+          format: uri
+          nullable: true
+        video_preview:
+          type: string
+          format: uri
+          nullable: true
+        trainer:
+          type: integer
+          nullable: true
+        trainer_name:
+          type: string
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: integer
+        is_published:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - category_name
+      - created_at
+      - final_price
+      - id
+      - name
+      - trainer_name
+      - updated_at
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        student_name:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+        course_name:
+          type: string
+          readOnly: true
+        enrolled_at:
+          type: string
+          format: date-time
+          readOnly: true
+        progress_percent:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        is_completed:
+          type: boolean
+        is_paused:
+          type: boolean
+      required:
+      - course
+      - course_name
+      - enrolled_at
+      - id
+      - student
+      - student_name
+    GatewayEnum:
+      enum:
+      - stripe
+      - razorpay
+      type: string
+      description: |-
+        * `stripe` - Stripe
+        * `razorpay` - Razorpay
+    Invoice:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        payment:
+          type: integer
+        invoice_number:
+          type: string
+          maxLength: 50
+        issued_at:
+          type: string
+          format: date-time
+          readOnly: true
+        pdf_file:
+          type: string
+          format: uri
+          nullable: true
+      required:
+      - id
+      - issued_at
+      - payment
+    LevelEnum:
+      enum:
+      - beginner
+      - intermediate
+      - advanced
+      type: string
+      description: |-
+        * `beginner` - Beginner
+        * `intermediate` - Intermediate
+        * `advanced` - Advanced
+    LiveSession:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        meeting_link:
+          type: string
+          format: uri
+          maxLength: 200
+        scheduled_at:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course
+      - created_at
+      - id
+      - meeting_link
+      - scheduled_at
+      - title
+    Note:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        file:
+          type: string
+          format: uri
+        date:
+          type: string
+          format: date
+          nullable: true
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course
+      - file
+      - id
+      - title
+      - uploaded_at
+    PaginatedAnnouncementList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Announcement'
+    PaginatedAnswerList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+    PaginatedAssignmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Assignment'
+    PaginatedCategoryList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Category'
+    PaginatedCouponList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Coupon'
+    PaginatedCourseList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Course'
+    PaginatedEnrollmentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Enrollment'
+    PaginatedInvoiceList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Invoice'
+    PaginatedLiveSessionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/LiveSession'
+    PaginatedNoteList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Note'
+    PaginatedPaymentList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Payment'
+    PaginatedQuestionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+    PaginatedQuizAttemptList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/QuizAttempt'
+    PaginatedQuizList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Quiz'
+    PaginatedRefundList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Refund'
+    PaginatedSubmissionList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Submission'
+    PaginatedTagList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Tag'
+    PaginatedUserList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/User'
+    PaginatedVideoList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/Video'
+    PaginatedVideoProgressList:
+      type: object
+      required:
+      - count
+      - results
+      properties:
+        count:
+          type: integer
+          example: 123
+        next:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=4
+        previous:
+          type: string
+          nullable: true
+          format: uri
+          example: http://api.example.org/accounts/?page=2
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/VideoProgress'
+    PatchedAnnouncement:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        trainer:
+          type: integer
+          readOnly: true
+        trainer_name:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        message:
+          type: string
+        published_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedAnswer:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        attempt:
+          type: integer
+        question:
+          type: integer
+        selected_choice:
+          type: integer
+          nullable: true
+        code_answer:
+          type: string
+        is_correct:
+          type: boolean
+          readOnly: true
+          nullable: true
+    PatchedAssignment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        course_name:
+          type: string
+          readOnly: true
+        trainer:
+          type: integer
+          readOnly: true
+        trainer_name:
+          type: string
+          readOnly: true
+        title:
+          type: string
+          maxLength: 255
+        description:
+          type: string
+        file:
+          type: string
+          format: uri
+          nullable: true
+        due_date:
+          type: string
+          format: date-time
+        max_marks:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        date:
+          type: string
+          format: date
+          nullable: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedCategory:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 100
+    PatchedCoupon:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        code:
+          type: string
+          maxLength: 30
+        discount_percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        valid_until:
+          type: string
+          format: date-time
+        max_uses:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        used_count:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        active:
+          type: boolean
+    PatchedCourse:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 255
+        category:
+          type: integer
+          nullable: true
+        category_name:
+          type: string
+          readOnly: true
+        level:
+          $ref: '#/components/schemas/LevelEnum'
+        duration_weeks:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        discount_percent:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,3}(?:\.\d{0,2})?$
+        final_price:
+          type: string
+          readOnly: true
+        thumbnail:
+          type: string
+          format: uri
+          nullable: true
+        banner:
+          type: string
+          format: uri
+          nullable: true
+        video_preview:
+          type: string
+          format: uri
+          nullable: true
+        trainer:
+          type: integer
+          nullable: true
+        trainer_name:
+          type: string
+          readOnly: true
+        tags:
+          type: array
+          items:
+            type: integer
+        is_published:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        updated_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedEnrollment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        student_name:
+          type: string
+          readOnly: true
+        course:
+          type: integer
+        course_name:
+          type: string
+          readOnly: true
+        enrolled_at:
+          type: string
+          format: date-time
+          readOnly: true
+        progress_percent:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        is_completed:
+          type: boolean
+        is_paused:
+          type: boolean
+    PatchedLiveSession:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        meeting_link:
+          type: string
+          format: uri
+          maxLength: 200
+        scheduled_at:
+          type: string
+          format: date-time
+        duration_minutes:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedNote:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        file:
+          type: string
+          format: uri
+        date:
+          type: string
+          format: date
+          nullable: true
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedPayment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        course_name:
+          type: string
+          readOnly: true
+        coupon:
+          type: integer
+          nullable: true
+        gateway:
+          $ref: '#/components/schemas/GatewayEnum'
+        gateway_reference:
+          type: string
+          maxLength: 255
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        gst_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        total_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PaymentStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        invoice_number:
+          type: string
+          readOnly: true
+        invoice_pdf:
+          type: string
+          readOnly: true
+        refund_status:
+          type: string
+          readOnly: true
+    PatchedQuestion:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          type: integer
+        text:
+          type: string
+        question_type:
+          $ref: '#/components/schemas/QuestionTypeEnum'
+        marks:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        starter_code:
+          type: string
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Choice'
+    PatchedQuiz:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        time_limit_minutes:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        negative_marking:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          readOnly: true
+        question_count:
+          type: string
+          readOnly: true
+    PatchedQuizAttempt:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          type: integer
+        student:
+          type: integer
+          readOnly: true
+        student_name:
+          type: string
+          readOnly: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+          readOnly: true
+        is_auto_evaluated:
+          type: boolean
+          readOnly: true
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          readOnly: true
+    PatchedRefund:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        payment:
+          type: integer
+        reason:
+          type: string
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RefundStatusEnum'
+          readOnly: true
+        requested_at:
+          type: string
+          format: date-time
+          readOnly: true
+        processed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+    PatchedSubmission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        assignment:
+          type: integer
+        assignment_title:
+          type: string
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        student_name:
+          type: string
+          readOnly: true
+        document:
+          type: string
+          format: uri
+        status:
+          $ref: '#/components/schemas/SubmissionStatusEnum'
+        marks_awarded:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          nullable: true
+        max_marks:
+          type: integer
+          readOnly: true
+        remarks:
+          type: string
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        evaluated_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_result_published:
+          type: boolean
+    PatchedTag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+    PatchedUser:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        phone:
+          type: string
+          maxLength: 20
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        is_active_account:
+          type: boolean
+        is_email_verified:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedVideo:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        file:
+          type: string
+          format: uri
+          nullable: true
+        url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        duration_minutes:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        date:
+          type: string
+          format: date
+          nullable: true
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+    PatchedVideoProgress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        enrollment:
+          type: integer
+        video:
+          type: integer
+        watched:
+          type: boolean
+        watched_at:
+          type: string
+          format: date-time
+          nullable: true
+    Payment:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        course_name:
+          type: string
+          readOnly: true
+        coupon:
+          type: integer
+          nullable: true
+        gateway:
+          $ref: '#/components/schemas/GatewayEnum'
+        gateway_reference:
+          type: string
+          maxLength: 255
+        amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+        gst_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        total_amount:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,8}(?:\.\d{0,2})?$
+          readOnly: true
+        status:
+          allOf:
+          - $ref: '#/components/schemas/PaymentStatusEnum'
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        invoice_number:
+          type: string
+          readOnly: true
+        invoice_pdf:
+          type: string
+          readOnly: true
+        refund_status:
+          type: string
+          readOnly: true
+      required:
+      - amount
+      - course
+      - course_name
+      - created_at
+      - gateway
+      - gst_amount
+      - id
+      - invoice_number
+      - invoice_pdf
+      - refund_status
+      - status
+      - student
+      - total_amount
+    PaymentStatusEnum:
+      enum:
+      - pending
+      - success
+      - failed
+      - refunded
+      type: string
+      description: |-
+        * `pending` - Pending
+        * `success` - Success
+        * `failed` - Failed
+        * `refunded` - Refunded
+    Question:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          type: integer
+        text:
+          type: string
+        question_type:
+          $ref: '#/components/schemas/QuestionTypeEnum'
+        marks:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        starter_code:
+          type: string
+        choices:
+          type: array
+          items:
+            $ref: '#/components/schemas/Choice'
+      required:
+      - id
+      - quiz
+      - text
+    QuestionTypeEnum:
+      enum:
+      - mcq
+      - true_false
+      - coding
+      type: string
+      description: |-
+        * `mcq` - MCQ
+        * `true_false` - True/False
+        * `coding` - Coding
+    Quiz:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        time_limit_minutes:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        negative_marking:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,2}(?:\.\d{0,2})?$
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+        questions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Question'
+          readOnly: true
+        question_count:
+          type: string
+          readOnly: true
+      required:
+      - course
+      - created_at
+      - id
+      - question_count
+      - questions
+      - title
+    QuizAttempt:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        quiz:
+          type: integer
+        student:
+          type: integer
+          readOnly: true
+        student_name:
+          type: string
+          readOnly: true
+        started_at:
+          type: string
+          format: date-time
+          readOnly: true
+        submitted_at:
+          type: string
+          format: date-time
+          nullable: true
+        score:
+          type: string
+          format: decimal
+          pattern: ^-?\d{0,4}(?:\.\d{0,2})?$
+          readOnly: true
+        is_auto_evaluated:
+          type: boolean
+          readOnly: true
+        answers:
+          type: array
+          items:
+            $ref: '#/components/schemas/Answer'
+          readOnly: true
+      required:
+      - answers
+      - id
+      - is_auto_evaluated
+      - quiz
+      - score
+      - started_at
+      - student
+      - student_name
+    Refund:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        payment:
+          type: integer
+        reason:
+          type: string
+        status:
+          allOf:
+          - $ref: '#/components/schemas/RefundStatusEnum'
+          readOnly: true
+        requested_at:
+          type: string
+          format: date-time
+          readOnly: true
+        processed_at:
+          type: string
+          format: date-time
+          readOnly: true
+          nullable: true
+      required:
+      - id
+      - payment
+      - processed_at
+      - requested_at
+      - status
+    RefundStatusEnum:
+      enum:
+      - requested
+      - approved
+      - rejected
+      - completed
+      type: string
+      description: |-
+        * `requested` - Requested
+        * `approved` - Approved
+        * `rejected` - Rejected
+        * `completed` - Completed
+    Register:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        password:
+          type: string
+          writeOnly: true
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        phone:
+          type: string
+          maxLength: 20
+      required:
+      - email
+      - id
+      - password
+      - username
+    RoleEnum:
+      enum:
+      - super_admin
+      - admin
+      - trainer
+      - student
+      - hr
+      type: string
+      description: |-
+        * `super_admin` - Super Admin
+        * `admin` - Admin
+        * `trainer` - Trainer
+        * `student` - Student
+        * `hr` - HR
+    Submission:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        assignment:
+          type: integer
+        assignment_title:
+          type: string
+          readOnly: true
+        student:
+          type: integer
+          readOnly: true
+        student_name:
+          type: string
+          readOnly: true
+        document:
+          type: string
+          format: uri
+        status:
+          $ref: '#/components/schemas/SubmissionStatusEnum'
+        marks_awarded:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+          nullable: true
+        max_marks:
+          type: integer
+          readOnly: true
+        remarks:
+          type: string
+        submitted_at:
+          type: string
+          format: date-time
+          readOnly: true
+        evaluated_at:
+          type: string
+          format: date-time
+          nullable: true
+        is_result_published:
+          type: boolean
+      required:
+      - assignment
+      - assignment_title
+      - document
+      - id
+      - max_marks
+      - student
+      - student_name
+      - submitted_at
+    SubmissionStatusEnum:
+      enum:
+      - submitted
+      - resubmitted
+      - evaluated
+      type: string
+      description: |-
+        * `submitted` - Submitted
+        * `resubmitted` - Resubmitted
+        * `evaluated` - Evaluated
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        name:
+          type: string
+          maxLength: 50
+      required:
+      - id
+      - name
+    TokenRefresh:
+      type: object
+      properties:
+        access:
+          type: string
+          readOnly: true
+        refresh:
+          type: string
+      required:
+      - access
+      - refresh
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        username:
+          type: string
+          description: Required. 150 characters or fewer. Letters, digits and @/./+/-/_
+            only.
+          pattern: ^[\w.@+-]+$
+          maxLength: 150
+        email:
+          type: string
+          format: email
+          maxLength: 254
+        first_name:
+          type: string
+          maxLength: 150
+        last_name:
+          type: string
+          maxLength: 150
+        role:
+          $ref: '#/components/schemas/RoleEnum'
+        phone:
+          type: string
+          maxLength: 20
+        profile_picture:
+          type: string
+          format: uri
+          nullable: true
+        is_active_account:
+          type: boolean
+        is_email_verified:
+          type: boolean
+          readOnly: true
+        created_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - created_at
+      - email
+      - id
+      - is_email_verified
+      - username
+    Video:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        course:
+          type: integer
+        title:
+          type: string
+          maxLength: 255
+        file:
+          type: string
+          format: uri
+          nullable: true
+        url:
+          oneOf:
+          - type: string
+            format: uri
+            maxLength: 200
+          - type: string
+            maxLength: 0
+        duration_minutes:
+          type: integer
+          maximum: 4294967295
+          minimum: 0
+          format: int64
+        date:
+          type: string
+          format: date
+          nullable: true
+        uploaded_at:
+          type: string
+          format: date-time
+          readOnly: true
+      required:
+      - course
+      - id
+      - title
+      - uploaded_at
+    VideoProgress:
+      type: object
+      properties:
+        id:
+          type: integer
+          readOnly: true
+        enrollment:
+          type: integer
+        video:
+          type: integer
+        watched:
+          type: boolean
+        watched_at:
+          type: string
+          format: date-time
+          nullable: true
+      required:
+      - enrollment
+      - id
+      - video
+  securitySchemes:
+    jwtAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

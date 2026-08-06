@@ -11,34 +11,6 @@ export default function Register() {
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const handleVerifyEmail = async () => {
-    if (!form.email) {
-      setError("Please enter an email address first.");
-      return;
-    }
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(form.email)) {
-      setError("Please enter a valid email address.");
-      return;
-    }
-    setError("");
-    setSuccess("");
-    try {
-      const { data } = await client.post("/auth/otp/send/", { email: form.email, purpose: "email_verification" });
-      const devNotice = data?.code ? ` (Dev Mode OTP: ${data.code})` : "";
-      setSuccess(`Verification code sent!${devNotice} Redirecting to OTP verification screen...`);
-      setTimeout(() => {
-        navigate("/verify-otp", { state: { email: form.email } });
-      }, 1500);
-    } catch (e) {
-      if (e.response?.status === 404) {
-        setSuccess("Email is available! Please fill out the registration form below and click 'Register'.");
-      } else {
-        setError(e.response?.data?.detail || "Could not send verification code.");
-      }
-    }
-  };
-
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError("");
@@ -50,9 +22,9 @@ export default function Register() {
     }
     try {
       await client.post("/auth/register/", form);
-      setSuccess("Registration details submitted! Redirecting to verify your email address...");
+      setSuccess("Account created successfully! Redirecting to login...");
       setTimeout(() => {
-        navigate("/verify-otp", { state: { email: form.email } });
+        navigate("/login");
       }, 1500);
     } catch (e) {
       setError(
@@ -101,26 +73,16 @@ export default function Register() {
               <label>
                 <span className="required-asterisk">*</span>Email Address
               </label>
-              <div style={{ display: "flex", gap: 10 }}>
-                <input
-                  className="form-input"
-                  type="email"
-                  placeholder="Enter your email"
-                  value={form.email}
-                  onChange={(e) => set("email", e.target.value)}
-                  required
-                />
-                <button
-                  type="button"
-                  className="btn secondary"
-                  style={{ whiteSpace: "nowrap", padding: "8px 12px", fontSize: 13 }}
-                  onClick={handleVerifyEmail}
-                  title="Verify email code if you already created an account"
-                >
-                  Verify
-                </button>
-              </div>
+              <input
+                className="form-input"
+                type="email"
+                placeholder="Enter your email"
+                value={form.email}
+                onChange={(e) => set("email", e.target.value)}
+                required
+              />
             </div>
+
 
             <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: 12 }}>
               <div className="form-group">

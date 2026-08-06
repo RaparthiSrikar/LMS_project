@@ -8,7 +8,29 @@ from drf_spectacular.views import (
     SpectacularSwaggerView,
 )
 
+from django.http import JsonResponse
+
+def api_root_view(request):
+    return JsonResponse({
+        "name": "Enterprise LMS API",
+        "status": "running",
+        "documentation": "/api/schema/swagger-ui/",
+        "admin": "/admin/",
+        "endpoints": {
+            "auth": "/api/auth/",
+            "courses": "/api/courses/",
+            "trainers": "/api/trainers/",
+            "students": "/api/students/",
+            "payments": "/api/payments/",
+            "assignments": "/api/assignments/",
+            "quizzes": "/api/quizzes/",
+            "dashboard": "/api/dashboard/",
+            "reports": "/api/reports/",
+        }
+    })
+
 urlpatterns = [
+    path("", api_root_view, name="api-root"),
     # Swagger & ReDoc API Documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("api/schema/swagger-ui/", SpectacularSwaggerView.as_view(url_name="schema"), name="swagger-ui"),
@@ -25,6 +47,7 @@ urlpatterns = [
     path("api/dashboard/", include("dashboard.urls")),
     path("api/reports/", include("reports.urls")),
 ]
+
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

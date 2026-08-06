@@ -7,8 +7,19 @@ import os
 
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+# Load .env file into os.environ if present
+env_file = BASE_DIR / ".env"
+if env_file.exists():
+    with open(env_file, "r", encoding="utf-8") as f:
+        for line in f:
+            line = line.strip()
+            if line and not line.startswith("#") and "=" in line:
+                k, v = line.split("=", 1)
+                os.environ[k.strip()] = v.strip()
+
 # Prevent SynchronousOnlyOperation on Vercel serverless environment
 os.environ["DJANGO_ALLOW_ASYNC_UNSAFE"] = "true"
+
 
 SECRET_KEY = os.environ.get("DJANGO_SECRET_KEY", "dev-secret-key-change-in-production")
 
@@ -78,39 +89,76 @@ TEMPLATES = [
 
 WSGI_APPLICATION = "lms_backend.wsgi.application"
 
-# ------------------------------------------------------------------
-# Database — PostgreSQL by default, falls back to SQLite for local dev
-# ------------------------------------------------------------------
-database_url = os.environ.get("DATABASE_URL")
-has_postgres_env = bool(os.environ.get("DB_HOST")) or bool(database_url)
-use_sqlite = os.environ.get("USE_SQLITE", "").lower() == "true" if "USE_SQLITE" in os.environ else not has_postgres_env
+try:
+    import pymysql
+    pymysql.install_as_MySQLdb()
+except ImportError:
+    pass
 
-if not use_sqlite and has_postgres_env:
+# ------------------------------------------------------------------
+# Database — MySQL / PostgreSQL / SQLite
+# ------------------------------------------------------------------
+database_url = (
+    os.environ.get("DATABASE_URL")
+    or os.environ.get("DATABASE_PUBLIC_URL")
+    or os.environ.get("DATABASE_PRIVATE_URL")
+    or os.environ.get("RAILWAY_DATABASE_URL")
+)
+
+has_db_env = bool(database_url) or bool(os.environ.get("DB_HOST")) or bool(os.environ.get("PGHOST"))
+use_sqlite = os.environ.get("USE_SQLITE", "").lower() == "true" if "USE_SQLITE" in os.environ else not has_db_env
+
+db_engine_setting = os.environ.get("DB_ENGINE", "").lower()
+
+if not use_sqlite and has_db_env:
     if database_url:
-        import urllib.parse
-        url = urllib.parse.urlparse(database_url)
+        try:
+            import dj_database_url
+            DATABASES = {
+                "default": dj_database_url.config(
+                    default=database_url,
+                    conn_max_age=600,
+                    conn_health_checks=True,
+                )
+            }
+        except ImportError:
+            import urllib.parse
+            url = urllib.parse.urlparse(database_url)
+            engine = "django.db.backends.mysql" if "mysql" in url.scheme else "django.db.backends.postgresql"
+            DATABASES = {
+                "default": {
+                    "ENGINE": engine,
+                    "NAME": url.path.lstrip("/"),
+                    "USER": url.username or "",
+                    "PASSWORD": urllib.parse.unquote(url.password or ""),
+                    "HOST": url.hostname or "localhost",
+                    "PORT": str(url.port or (3306 if "mysql" in engine else 5432)),
+                }
+            }
+    elif db_engine_setting == "mysql" or os.environ.get("DB_PORT") == "3306":
         DATABASES = {
             "default": {
-                "ENGINE": "django.db.backends.postgresql",
-                "NAME": url.path.lstrip("/"),
-                "USER": url.username or "",
-                "PASSWORD": urllib.parse.unquote(url.password or ""),
-                "HOST": url.hostname or "localhost",
-                "PORT": str(url.port or 5432),
+                "ENGINE": "django.db.backends.mysql",
+                "NAME": os.environ.get("DB_NAME", "lms_db"),
+                "USER": os.environ.get("DB_USER", "root"),
+                "PASSWORD": os.environ.get("DB_PASSWORD", ""),
+                "HOST": os.environ.get("DB_HOST", "127.0.0.1"),
+                "PORT": os.environ.get("DB_PORT", "3306"),
+                "OPTIONS": {
+                    "init_command": "SET sql_mode='STRICT_TRANS_TABLES'",
+                },
             }
         }
-        if "sslmode" in url.query:
-            sslmode = urllib.parse.parse_qs(url.query).get("sslmode", ["prefer"])[0]
-            DATABASES["default"]["OPTIONS"] = {"sslmode": sslmode}
     else:
+        # Check standard PG* variables (Railway native) vs custom DB_* variables
         DATABASES = {
             "default": {
                 "ENGINE": "django.db.backends.postgresql",
-                "NAME": os.environ.get("DB_NAME", "postgres"),
-                "USER": os.environ.get("DB_USER", "postgres"),
-                "PASSWORD": os.environ.get("DB_PASSWORD", ""),
-                "HOST": os.environ.get("DB_HOST", "localhost"),
-                "PORT": os.environ.get("DB_PORT", "5432"),
+                "NAME": os.environ.get("PGDATABASE") or os.environ.get("DB_NAME", "postgres"),
+                "USER": os.environ.get("PGUSER") or os.environ.get("DB_USER", "postgres"),
+                "PASSWORD": os.environ.get("PGPASSWORD") or os.environ.get("DB_PASSWORD", ""),
+                "HOST": os.environ.get("PGHOST") or os.environ.get("DB_HOST", "localhost"),
+                "PORT": os.environ.get("PGPORT") or os.environ.get("DB_PORT", "5432"),
             }
         }
 else:
